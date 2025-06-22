@@ -1,0 +1,53 @@
+name: storman
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: storman_postgres
+    env_file: ./.env
+    restart: always
+    ports:
+      - "5431:5432"
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    image: storman_backend
+    container_name: storman_nodejs
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file: ./.env
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /usr/app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./package.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:latest
+    container_name: storman_nginx
+    restart: always
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "3050:80"
+    depends_on:
+      - backend
+      - postgres
+
+volumes:
+  database-data:

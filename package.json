@@ -1,0 +1,28 @@
+{
+  "name": "storman_backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon --exitcrash index.js",
+    "migrate": "node-pg-migrate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "A project to streamline store management and sales",
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "dependencies": {
+    "compression": "^1.8.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.0.1",
+    "helmet": "^8.0.0",
+    "node-pg-migrate": "^7.9.1",
+    "pg": "^8.13.3",
+    "pg-format": "^1.0.4",
+    "winston": "^3.17.0"
+  }
+}
